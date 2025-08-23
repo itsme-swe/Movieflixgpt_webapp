@@ -19,3 +19,5 @@
      3. Browse Component
 
 2. Setting up Google firebase to deploy our app
+
+   - Now after setting up firebase, we'll try to register first user in firebase.

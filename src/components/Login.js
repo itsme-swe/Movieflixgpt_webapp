@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validationLogic";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebaseConfig";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -12,18 +17,46 @@ const Login = () => {
   const password = useRef(null);
 
   const handleButtonClick = () => {
-    // These are the values we are able to see which user enters on Login Page --- email and password
-    console.log(name.current.value);
-    console.log(email.current.value);
-    console.log(password.current.value);
-
     // validating our email and password
-    const msg = checkValidData(
-      name.current.value,
-      email.current.value,
-      password.current.value
-    );
+    const msg = checkValidData(email.current.value, password.current.value);
     setErrorMessage(msg);
+
+    if (msg) return;
+
+    // Now we'll be writing Sign In and Sign Up Logic
+    if (!isSignInForm) {
+      // 🔸 Sign Up Logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      // 🔸 Sign In Logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
 
   // 🔸 Its's an onClick function to change from Sign In →→→ Sign Up
@@ -67,7 +100,7 @@ const Login = () => {
         />
         <input
           ref={password}
-          type="text"
+          type="password"
           placeholder="Password"
           className="p-4 my-3 w-full bg-transparent border border-gray-600 rounded-md text-white placeholder-gray-300 focus:outline-none focus:border-red-600"
         />
@@ -81,7 +114,7 @@ const Login = () => {
         </button>
         <p className="py-4">
           {isSignInForm ? (
-            <div>
+            <>
               New to Netflix ?{" "}
               <span
                 className="text-white-600 font-bold cursor-pointer hover:underline "
@@ -89,9 +122,9 @@ const Login = () => {
               >
                 Sign Up
               </span>
-            </div>
+            </>
           ) : (
-            <div>
+            <>
               Already registered user ?{" "}
               <span
                 className="text-white-600 font-bold cursor-pointer hover:underline "
@@ -99,7 +132,7 @@ const Login = () => {
               >
                 Sign In
               </span>
-            </div>
+            </>
           )}
         </p>
       </form>
