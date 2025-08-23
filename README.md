@@ -23,3 +23,5 @@
 
    - Now after setting up firebase, we'll try to register first user in firebase.
    - For registering user to firebase we need to use **createUserByEmailAndPassword** and **signInUserByEmailAndPassword** API's given by firebase.
+
+3. After setting up firebase and writing all logic for **Sign In / Sign Up** we'll be setting up our **Redux Store** --- We'll be using **redux Store** to store objects returned when user get **Sign Up** to our app.
